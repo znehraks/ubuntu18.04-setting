@@ -6,7 +6,7 @@
 
 ### 초기 세팅시 한글 설정 오류 발생
 
-### 초기 세팅시 nodejs, nvm, anaconda3 설치
+### 초기 세팅시 nodejs, nvm, anaconda3, postgresql, pgadmin4, ngrok 설치 및 세팅
 
 ### 주피터노트북 초기세팅
 
@@ -71,3 +71,43 @@ cat /proc/sys/fs/inotify/max_user_watches
 
 #- config variable name (not runnable)
 fs.inotify.max_user_watches=524288
+
+####
+
+postgresql 다운로드
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+sudo su - postgres -c "createuser john"
+sudo su - postgres -c "createdb johndb"
+sudo -u postgres psql
+grant all privileges on database johndb to john;
+sudo nano /etc/postgresql/10/main/postgresql.conf (경로는 다를 수 있음.)
+#- /etc/postgresql/10/main/postgresql.conf
+
+#------------------------------------------------------------------------------
+#- CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+#- -- Connection Settings -
+
+listen_addresses = '\*' # what IP address(es) to listen on;
+
+sudo service postgresql restart
+ss -nlt | grep 5432
+
+# /etc/postgresql/10/main/pg_hba.conf
+
+# TYPE DATABASE USER ADDRESS METHOD
+
+# The user jane will be able to access all databases from all locations using a md5 password
+
+host all jane 0.0.0.0/0 md5
+
+# The user jane will be able to access only the janedb from all locations using a md5 password
+
+host janedb jane 0.0.0.0/0 md5
+
+# The user jane will be able to access all databases from a trusted location (192.168.1.134) without a password
+
+host all jane 192.168.1.134 trust
+method를 trust로 바꾸는것이 중요함
